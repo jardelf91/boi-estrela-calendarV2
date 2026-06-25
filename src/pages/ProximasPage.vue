@@ -40,6 +40,7 @@
         <div class="proximas-card__date">
           <span class="proximas-card__date-day">{{ diaNumero(evento.start) }}</span>
           <span class="proximas-card__date-month">{{ mesAbrev(evento.start) }}</span>
+          <span class="proximas-card__date-year">{{ anoNumero(evento.start) }}</span>
         </div>
 
         <!-- Divisor -->
@@ -123,6 +124,14 @@ function mesAbrev(dateStr: string): string {
   }
 }
 
+function anoNumero(dateStr: string): string {
+  try {
+    return format(parseISO(dateStr), 'yyyy', { locale: ptBR })
+  } catch {
+    return '--'
+  }
+}
+
 function horaFormatada(dateStr: string): string {
   return saoPauloHHMM(dateStr)
 }
@@ -198,6 +207,14 @@ function horaFormatada(dateStr: string): string {
     color: rgba(225, 172, 38, 0.65);
     letter-spacing: 0.5px;
     margin-top: 2px;
+  }
+
+  &__date-year {
+    font-size: 10px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.35);
+    letter-spacing: 0.3px;
+    margin-top: 1px;
   }
 
   &__divider {

@@ -52,6 +52,8 @@
               <q-icon name="place" size="13px" color="grey-6" />
               <span>{{ evento.location.split(',')[0] }}</span>
             </div>
+
+            <p v-if="evento.description" class="historico-card__description">{{ evento.description }}</p>
           </div>
 
           <q-icon name="chevron_right" size="18px" color="grey-8" class="historico-card__arrow" />
@@ -219,6 +221,15 @@ function horaFormatada(dateStr: string): string {
     gap: 4px;
     font-size: 12px;
     color: rgba(255, 255, 255, 0.3);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__description {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.25);
+    margin: 2px 0 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
