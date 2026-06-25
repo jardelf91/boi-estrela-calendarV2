@@ -41,7 +41,10 @@
           <div class="historico-card__divider" />
 
           <div class="historico-card__content">
-            <p class="historico-card__title">{{ evento.title }}</p>
+            <div class="historico-card__title-row">
+              <p class="historico-card__title">{{ evento.title }}</p>
+              <span v-if="evento.cancelled" class="historico-card__badge-cancelado">Cancelado</span>
+            </div>
 
             <div v-if="!evento.allDay" class="historico-card__meta">
               <q-icon name="schedule" size="13px" color="grey-6" />
@@ -205,6 +208,13 @@ function horaFormatada(dateStr: string): string {
     gap: 4px;
   }
 
+  &__title-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+  }
+
   &__title {
     font-size: 14px;
     font-weight: 500;
@@ -213,6 +223,21 @@ function horaFormatada(dateStr: string): string {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__badge-cancelado {
+    flex-shrink: 0;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: #ef9a9a;
+    background-color: rgba(239, 83, 80, 0.12);
+    border: 1px solid rgba(239, 83, 80, 0.25);
+    border-radius: 4px;
+    padding: 2px 6px;
   }
 
   &__meta {

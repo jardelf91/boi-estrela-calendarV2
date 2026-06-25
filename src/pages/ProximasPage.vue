@@ -34,6 +34,7 @@
         v-for="evento in upcomingEvents"
         :key="evento.id"
         class="proximas-card"
+        :class="{ 'proximas-card--cancelado': evento.cancelled }"
         @click="abrirEvento(evento)"
       >
         <!-- Data lateral -->
@@ -48,7 +49,10 @@
 
         <!-- Conteúdo -->
         <div class="proximas-card__content">
-          <p class="proximas-card__title">{{ evento.title }}</p>
+          <div class="proximas-card__title-row">
+            <p class="proximas-card__title" :class="{ 'proximas-card__title--cancelado': evento.cancelled }">{{ evento.title }}</p>
+            <span v-if="evento.cancelled" class="proximas-card__badge-cancelado">Cancelado</span>
+          </div>
 
           <div v-if="!evento.allDay" class="proximas-card__meta">
             <q-icon name="schedule" size="14px" color="primary" />
@@ -234,6 +238,13 @@ function horaFormatada(dateStr: string): string {
     gap: 5px;
   }
 
+  &__title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+
   &__title {
     font-size: 15px;
     font-weight: 600;
@@ -243,6 +254,36 @@ function horaFormatada(dateStr: string): string {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    flex: 1;
+    min-width: 0;
+
+    &--cancelado {
+      color: rgba(255, 255, 255, 0.4);
+      text-decoration: line-through;
+    }
+  }
+
+  &__badge-cancelado {
+    flex-shrink: 0;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: #ef9a9a;
+    background-color: rgba(239, 83, 80, 0.15);
+    border: 1px solid rgba(239, 83, 80, 0.35);
+    border-radius: 4px;
+    padding: 2px 6px;
+  }
+
+  &--cancelado {
+    .proximas-card__date-day,
+    .proximas-card__date-month {
+      color: rgba(239, 83, 80, 0.5);
+    }
+    .proximas-card__divider {
+      background: linear-gradient(to bottom, transparent, rgba(239, 83, 80, 0.3), transparent);
+    }
   }
 
   &__meta {

@@ -31,8 +31,14 @@
           </div>
           <h2 class="evento-modal__title">{{ evento?.title }}</h2>
 
+          <!-- Badge cancelado -->
+          <div v-if="evento?.cancelled" class="evento-modal__badge-cancelado">
+            <q-icon name="cancel" size="14px" />
+            <span>Apresentação cancelada</span>
+          </div>
+
           <!-- Badge encerrado -->
-          <div v-if="isPassado" class="evento-modal__badge-encerrado">
+          <div v-else-if="isPassado" class="evento-modal__badge-encerrado">
             <q-icon name="check_circle" size="14px" />
             <span>Apresentação realizada</span>
           </div>
@@ -49,6 +55,15 @@
           <div class="evento-modal__info-content">
             <span class="evento-modal__info-label">Data e Horário</span>
             <span class="evento-modal__info-value">{{ dataFormatada }}</span>
+          </div>
+        </div>
+
+        <!-- Motivo de cancelamento -->
+        <div v-if="evento?.cancelled" class="evento-modal__cancel-banner q-mt-md">
+          <q-icon name="info" size="18px" color="red-4" class="q-mt-xs" style="flex-shrink:0" />
+          <div>
+            <p class="evento-modal__cancel-title">Esta apresentação foi cancelada</p>
+            <p v-if="evento.cancelReason" class="evento-modal__cancel-reason">{{ evento.cancelReason }}</p>
           </div>
         </div>
 
@@ -358,6 +373,46 @@ const mapEmbedUrl = computed(() =>
     line-height: 1.3;
     margin: 10px 0 0;
     color: #fff;
+  }
+
+  &__badge-cancelado {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 10px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background-color: rgba(239, 83, 80, 0.15);
+    border: 1px solid rgba(239, 83, 80, 0.4);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: #ef9a9a;
+    text-transform: uppercase;
+  }
+
+  &__cancel-banner {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    background-color: rgba(239, 83, 80, 0.08);
+    border: 1px solid rgba(239, 83, 80, 0.25);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+
+  &__cancel-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #ef9a9a;
+    margin: 0;
+  }
+
+  &__cancel-reason {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 4px 0 0;
+    line-height: 1.4;
   }
 
   &__badge-encerrado {

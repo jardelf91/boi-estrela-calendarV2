@@ -133,6 +133,7 @@ function abrirEventoModal(evento: CalendarEvent) {
 }
 
 function eventClassNames(arg: any): string[] {
+  if (arg.event.extendedProps?.cancelled) return ['evento-cancelado']
   const end = arg.event.end ?? arg.event.start
   return new Date(end) < new Date() ? ['evento-passado'] : []
 }
@@ -149,6 +150,8 @@ function handleEventClick(info: any) {
     location: p.location ?? '',
     allDay: info.event.allDay,
     imageUrl: p.imageUrl ?? '',
+    cancelled: p.cancelled ?? false,
+    cancelReason: p.cancelReason ?? '',
   }
   modalOpen.value = true
 }
@@ -467,6 +470,31 @@ const desktopListOptions = computed<CalendarOptions>(() => ({
     color: rgba(255, 255, 255, 0.35);
     padding: 32px 0;
     font-size: 14px;
+  }
+
+  // Eventos cancelados — grade mensal
+  .fc-daygrid-event.evento-cancelado {
+    opacity: 0.6;
+    background-color: rgba(239, 83, 80, 0.25) !important;
+    border-color: rgba(239, 83, 80, 0.5) !important;
+    text-decoration: line-through;
+    color: #ef9a9a !important;
+  }
+
+  // Eventos cancelados — dot
+  .fc-daygrid-dot-event.evento-cancelado {
+    opacity: 0.6;
+    .fc-daygrid-event-dot { border-color: #ef5350 !important; }
+  }
+
+  // Eventos cancelados — lista
+  .fc-list-event.evento-cancelado {
+    td { background-color: rgba(239, 83, 80, 0.05); }
+    .fc-list-event-dot { border-color: #ef5350 !important; }
+    .fc-list-event-title a {
+      color: #ef9a9a;
+      text-decoration: line-through;
+    }
   }
 
   // Eventos encerrados — grade mensal

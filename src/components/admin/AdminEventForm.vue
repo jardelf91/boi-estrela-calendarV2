@@ -102,6 +102,27 @@
           class="q-mb-md"
         />
 
+        <q-separator v-if="isEditing" dark class="q-mb-md" />
+
+        <div v-if="isEditing" class="event-form__cancel-section q-mb-md">
+          <q-toggle
+            v-model="form.cancelled"
+            label="Marcar como cancelado"
+            color="red-5"
+          />
+          <q-input
+            v-if="form.cancelled"
+            v-model="form.cancelReason"
+            label="Motivo do cancelamento (opcional)"
+            dark
+            outlined
+            type="textarea"
+            :rows="2"
+            autogrow
+            class="q-mt-sm"
+          />
+        </div>
+
         <q-input
           v-model="form.imageUrl"
           label="URL da foto de capa (opcional)"
@@ -198,6 +219,8 @@ interface EventForm {
   location: string
   description: string
   imageUrl: string
+  cancelled: boolean
+  cancelReason: string
 }
 
 function defaultForm(): EventForm {
@@ -210,6 +233,8 @@ function defaultForm(): EventForm {
     location: '',
     description: '',
     imageUrl: '',
+    cancelled: false,
+    cancelReason: '',
   }
 }
 
@@ -224,6 +249,8 @@ function fromEvento(evento: CalendarEvent): EventForm {
       location: evento.location,
       description: evento.description,
       imageUrl: evento.imageUrl ?? '',
+      cancelled: evento.cancelled ?? false,
+      cancelReason: evento.cancelReason ?? '',
     }
   }
   return {
@@ -235,6 +262,8 @@ function fromEvento(evento: CalendarEvent): EventForm {
     location: evento.location,
     description: evento.description,
     imageUrl: evento.imageUrl ?? '',
+    cancelled: evento.cancelled ?? false,
+    cancelReason: evento.cancelReason ?? '',
   }
 }
 
@@ -276,7 +305,7 @@ function buildBody() {
       location: form.value.location,
       start: { date: form.value.date },
       end: { date: format(nextDay, 'yyyy-MM-dd') },
-      extendedProperties: { shared: { imageUrl: form.value.imageUrl } },
+      extendedProperties: { shared: { imageUrl: form.value.imageUrl, cancelled: String(form.value.cancelled), cancelReason: form.value.cancelReason } },
     }
   }
   return {
@@ -285,7 +314,7 @@ function buildBody() {
     location: form.value.location,
     start: { dateTime: `${form.value.date}T${form.value.startTime}:00`, timeZone: 'America/Sao_Paulo' },
     end: { dateTime: `${form.value.date}T${form.value.endTime}:00`, timeZone: 'America/Sao_Paulo' },
-    extendedProperties: { shared: { imageUrl: form.value.imageUrl } },
+    extendedProperties: { shared: { imageUrl: form.value.imageUrl, cancelled: String(form.value.cancelled), cancelReason: form.value.cancelReason } },
   }
 }
 
@@ -427,6 +456,13 @@ async function deleteEvent() {
   &__actions {
     border-top: 1px solid #2a2a2a;
     padding-top: 16px;
+  }
+
+  &__cancel-section {
+    background-color: rgba(239, 83, 80, 0.06);
+    border: 1px solid rgba(239, 83, 80, 0.2);
+    border-radius: 10px;
+    padding: 12px 14px;
   }
 
   &__cover-preview {

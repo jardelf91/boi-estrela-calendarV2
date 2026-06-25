@@ -13,6 +13,8 @@ export interface CalendarEvent {
   location: string
   allDay: boolean
   imageUrl: string
+  cancelled: boolean
+  cancelReason: string
 }
 
 // Retorna HH:mm no fuso de São Paulo — independente do fuso do calendário ou do device
@@ -90,6 +92,8 @@ export function useGoogleCalendar() {
         location: item.location ?? '',
         allDay: !item.start?.dateTime,
         imageUrl: item.extendedProperties?.shared?.imageUrl ?? '',
+        cancelled: item.extendedProperties?.shared?.cancelled === 'true',
+        cancelReason: item.extendedProperties?.shared?.cancelReason ?? '',
       }))
 
       fetched = true
@@ -108,7 +112,7 @@ export function useGoogleCalendar() {
   const upcomingEvents = computed(() => {
     const now = new Date()
     return events.value
-      .filter((e) => new Date(e.end || e.start) >= now)
+      .filter((e) => new Date(e.end || e.start) >= now && !e.cancelled)
       .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime())
   })
 
@@ -123,6 +127,8 @@ export function useGoogleCalendar() {
         description: e.description,
         location: e.location,
         imageUrl: e.imageUrl,
+        cancelled: e.cancelled,
+        cancelReason: e.cancelReason,
       },
     })),
   )
