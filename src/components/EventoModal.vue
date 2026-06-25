@@ -286,11 +286,11 @@ const mapEmbedUrl = computed(() =>
 
   &__cover-gradient {
     position: absolute;
-    bottom: 0;
+    top: 0;
     left: 0;
     right: 0;
-    height: 110px;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.82) 0%, transparent 100%);
+    bottom: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0.1) 100%);
     pointer-events: none;
   }
 
