@@ -12,9 +12,9 @@ const SESSION_TOKEN_KEY = 'boi_gtoken'
 const SESSION_EXPIRY_KEY = 'boi_gtoken_exp'
 
 // Restaura sessão ao carregar a página
-const storedAdmin = sessionStorage.getItem(SESSION_ADMIN_KEY) === '1'
-const storedToken = sessionStorage.getItem(SESSION_TOKEN_KEY)
-const storedExpiry = parseInt(sessionStorage.getItem(SESSION_EXPIRY_KEY) ?? '0', 10)
+const storedAdmin = localStorage.getItem(SESSION_ADMIN_KEY) === '1'
+const storedToken = localStorage.getItem(SESSION_TOKEN_KEY)
+const storedExpiry = parseInt(localStorage.getItem(SESSION_EXPIRY_KEY) ?? '0', 10)
 const tokenStillValid = !!storedToken && Date.now() < storedExpiry
 
 const isAdmin = ref(storedAdmin)
@@ -107,7 +107,7 @@ export async function authenticateWithBiometric(): Promise<boolean> {
       },
     })
     isAdmin.value = true
-    sessionStorage.setItem(SESSION_ADMIN_KEY, '1')
+    localStorage.setItem(SESSION_ADMIN_KEY, '1')
     return true
   } catch {
     return false
@@ -118,7 +118,7 @@ export function useAdminAuth() {
   function validatePin(pin: string): boolean {
     if (pin === import.meta.env.VITE_ADMIN_PIN) {
       isAdmin.value = true
-      sessionStorage.setItem(SESSION_ADMIN_KEY, '1')
+      localStorage.setItem(SESSION_ADMIN_KEY, '1')
       return true
     }
     return false
@@ -137,8 +137,8 @@ export function useAdminAuth() {
           }
           accessToken.value = response.access_token
           tokenExpiry = Date.now() + response.expires_in * 1000
-          sessionStorage.setItem(SESSION_TOKEN_KEY, response.access_token)
-          sessionStorage.setItem(SESSION_EXPIRY_KEY, String(tokenExpiry))
+          localStorage.setItem(SESSION_TOKEN_KEY, response.access_token)
+          localStorage.setItem(SESSION_EXPIRY_KEY, String(tokenExpiry))
           resolve()
         },
       })
@@ -153,9 +153,9 @@ export function useAdminAuth() {
     isAdmin.value = false
     accessToken.value = null
     tokenExpiry = 0
-    sessionStorage.removeItem(SESSION_ADMIN_KEY)
-    sessionStorage.removeItem(SESSION_TOKEN_KEY)
-    sessionStorage.removeItem(SESSION_EXPIRY_KEY)
+    localStorage.removeItem(SESSION_ADMIN_KEY)
+    localStorage.removeItem(SESSION_TOKEN_KEY)
+    localStorage.removeItem(SESSION_EXPIRY_KEY)
   }
 
   const isTokenValid = computed(() => !!accessToken.value && Date.now() < tokenExpiry)
