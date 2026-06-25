@@ -150,6 +150,8 @@ const props = defineProps<{
   evento?: CalendarEvent | null
 }>()
 
+const emit = defineEmits<{ saved: [] }>()
+
 const { isTokenValid, accessToken, connectGoogle } = useAdminAuth()
 const { refetch } = useGoogleCalendar()
 
@@ -292,6 +294,7 @@ async function save() {
     }
 
     $q.notify({ type: 'positive', message: isEditing.value ? 'Evento atualizado!' : 'Evento criado!' })
+    emit('saved')
     refetch()
     isOpen.value = false
   } catch (e: any) {
@@ -323,6 +326,7 @@ async function deleteEvent() {
       throw new Error(`Erro ${res.status}`)
     }
     $q.notify({ type: 'positive', message: 'Evento excluído!' })
+    emit('saved')
     refetch()
     isOpen.value = false
   } catch (e: any) {

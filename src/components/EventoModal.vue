@@ -135,7 +135,7 @@
     </q-card>
   </q-dialog>
 
-  <AdminEventForm v-model="editFormOpen" :evento="evento" />
+  <AdminEventForm v-model="editFormOpen" :evento="evento" @saved="isOpen = false" />
 </template>
 
 <script setup lang="ts">
