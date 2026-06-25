@@ -52,7 +52,7 @@ module.exports = configure(function () {
           warning: '#F2C037',
         },
       },
-      plugins: ['Notify', 'Loading'],
+      plugins: ['Notify', 'Loading', 'Dialog'],
     },
 
     animations: [],

@@ -47,7 +47,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { parseISO, format, differenceInSeconds } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import type { CalendarEvent } from 'src/composables/useGoogleCalendar'
+import { saoPauloHHMM, type CalendarEvent } from 'src/composables/useGoogleCalendar'
 
 defineOptions({ name: 'CountdownCard' })
 
@@ -76,10 +76,10 @@ const dataFormatada = computed(() => {
   if (!props.proximoEvento?.start) return ''
   try {
     const d = parseISO(props.proximoEvento.start)
-    if (props.proximoEvento.allDay) {
-      return format(d, "EEEE, dd 'de' MMMM 'de' yyyy", { locale: ptBR })
-    }
-    return format(d, "EEEE, dd 'de' MMMM 'de' yyyy 'às' HH:mm", { locale: ptBR })
+    const datePart = format(d, "EEEE, dd 'de' MMMM 'de' yyyy", { locale: ptBR })
+    if (props.proximoEvento.allDay) return datePart
+    const hora = saoPauloHHMM(props.proximoEvento.start)
+    return `${datePart} às ${hora}`
   } catch {
     return ''
   }

@@ -93,7 +93,25 @@
           type="textarea"
           :rows="3"
           autogrow
+          class="q-mb-md"
         />
+
+        <q-input
+          v-model="form.imageUrl"
+          label="URL da foto de capa (opcional)"
+          dark
+          outlined
+          hint="Cole aqui o link direto de uma imagem"
+          :rules="[v => !v || v.startsWith('http') || 'Informe uma URL válida']"
+        >
+          <template #prepend>
+            <q-icon name="image" />
+          </template>
+        </q-input>
+
+        <div v-if="form.imageUrl" class="event-form__cover-preview q-mt-sm">
+          <img :src="form.imageUrl" @error="form.imageUrl = ''" />
+        </div>
       </q-card-section>
 
       <!-- Ações -->
@@ -137,9 +155,9 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { useQuasar } from 'quasar'
-import { format, parseISO, addHours } from 'date-fns'
+import { format } from 'date-fns'
 import { useAdminAuth } from 'src/composables/useAdminAuth'
-import { useGoogleCalendar, CALENDAR_ID, type CalendarEvent } from 'src/composables/useGoogleCalendar'
+import { useGoogleCalendar, CALENDAR_ID, saoPauloHHMM, saoPauloDateStr, type CalendarEvent } from 'src/composables/useGoogleCalendar'
 
 defineOptions({ name: 'AdminEventForm' })
 
@@ -169,6 +187,7 @@ interface EventForm {
   endTime: string
   location: string
   description: string
+  imageUrl: string
 }
 
 function defaultForm(): EventForm {
@@ -180,6 +199,7 @@ function defaultForm(): EventForm {
     endTime: '23:00',
     location: '',
     description: '',
+    imageUrl: '',
   }
 }
 
@@ -193,18 +213,18 @@ function fromEvento(evento: CalendarEvent): EventForm {
       endTime: '12:00',
       location: evento.location,
       description: evento.description,
+      imageUrl: evento.imageUrl ?? '',
     }
   }
-  const start = parseISO(evento.start)
-  const end = evento.end ? parseISO(evento.end) : addHours(start, 3)
   return {
     title: evento.title,
     allDay: false,
-    date: format(start, 'yyyy-MM-dd'),
-    startTime: format(start, 'HH:mm'),
-    endTime: format(end, 'HH:mm'),
+    date: saoPauloDateStr(evento.start),
+    startTime: saoPauloHHMM(evento.start),
+    endTime: saoPauloHHMM(evento.end || evento.start),
     location: evento.location,
     description: evento.description,
+    imageUrl: evento.imageUrl ?? '',
   }
 }
 
@@ -246,20 +266,16 @@ function buildBody() {
       location: form.value.location,
       start: { date: form.value.date },
       end: { date: format(nextDay, 'yyyy-MM-dd') },
+      extendedProperties: { shared: { imageUrl: form.value.imageUrl } },
     }
   }
   return {
     summary: form.value.title,
     description: form.value.description,
     location: form.value.location,
-    start: {
-      dateTime: `${form.value.date}T${form.value.startTime}:00`,
-      timeZone: 'America/Sao_Paulo',
-    },
-    end: {
-      dateTime: `${form.value.date}T${form.value.endTime}:00`,
-      timeZone: 'America/Sao_Paulo',
-    },
+    start: { dateTime: `${form.value.date}T${form.value.startTime}:00`, timeZone: 'America/Sao_Paulo' },
+    end: { dateTime: `${form.value.date}T${form.value.endTime}:00`, timeZone: 'America/Sao_Paulo' },
+    extendedProperties: { shared: { imageUrl: form.value.imageUrl } },
   }
 }
 
@@ -401,6 +417,20 @@ async function deleteEvent() {
   &__actions {
     border-top: 1px solid #2a2a2a;
     padding-top: 16px;
+  }
+
+  &__cover-preview {
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #2a2a2a;
+    max-height: 140px;
+
+    img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      display: block;
+    }
   }
 }
 </style>

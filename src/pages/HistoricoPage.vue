@@ -69,7 +69,7 @@ import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { format, parseISO } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import EventoModal from 'src/components/EventoModal.vue'
-import { useGoogleCalendar, type CalendarEvent } from 'src/composables/useGoogleCalendar'
+import { useGoogleCalendar, saoPauloHHMM, type CalendarEvent } from 'src/composables/useGoogleCalendar'
 
 defineOptions({ name: 'HistoricoPage' })
 
@@ -110,7 +110,7 @@ function ano(dateStr: string): string {
   try { return format(parseISO(dateStr), 'yyyy') } catch { return '' }
 }
 function horaFormatada(dateStr: string): string {
-  try { return format(parseISO(dateStr), 'HH:mm', { locale: ptBR }) } catch { return '' }
+  return saoPauloHHMM(dateStr)
 }
 </script>
 

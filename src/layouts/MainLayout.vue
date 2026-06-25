@@ -28,7 +28,7 @@
           icon="admin_panel_settings"
           color="primary"
           size="sm"
-          @click="logout"
+          @click="confirmLogout"
         >
           <q-tooltip>Sair do modo admin</q-tooltip>
         </q-btn>
@@ -78,13 +78,25 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useQuasar } from 'quasar'
 import { useAdminAuth } from 'src/composables/useAdminAuth'
 import AdminPinDialog from 'src/components/admin/AdminPinDialog.vue'
 import AdminEventForm from 'src/components/admin/AdminEventForm.vue'
 
 defineOptions({ name: 'MainLayout' })
 
+const $q = useQuasar()
 const { isAdmin, logout } = useAdminAuth()
+
+function confirmLogout() {
+  $q.dialog({
+    title: 'Sair do modo admin',
+    message: 'Deseja encerrar o acesso administrativo?',
+    cancel: { flat: true, label: 'Cancelar', color: 'grey-5' },
+    ok: { unelevated: true, label: 'Sair', color: 'red-5', noCaps: true },
+    dark: true,
+  }).onOk(logout)
+}
 const pinDialogOpen = ref(false)
 const formOpen = ref(false)
 
@@ -156,6 +168,7 @@ function onLogoRelease() {
 .layout-footer {
   background-color: #111111;
   border-top: 1px solid #2a2a2a;
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 .layout-tabs {
@@ -172,7 +185,7 @@ function onLogoRelease() {
 
 .admin-fab {
   position: fixed;
-  bottom: 76px;
+  bottom: calc(76px + env(safe-area-inset-bottom));
   right: 16px;
   z-index: 2000;
 }

@@ -6,8 +6,15 @@
     transition-hide="slide-down"
   >
     <q-card class="evento-modal" :class="{ 'evento-modal--desktop': $q.screen.gt.xs }">
-      <!-- Header com gradiente -->
-      <div class="evento-modal__header">
+      <!-- Header -->
+      <div class="evento-modal__header" :class="{ 'evento-modal__header--cover': !!evento?.imageUrl }">
+        <img
+          v-if="evento?.imageUrl && !coverError"
+          class="evento-modal__cover-img"
+          :src="evento.imageUrl"
+          @error="coverError = true"
+        />
+        <div v-if="evento?.imageUrl && !coverError" class="evento-modal__cover-gradient" />
         <div class="evento-modal__header-overlay">
           <q-btn
             flat
@@ -139,23 +146,26 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useQuasar } from 'quasar'
 import { format, parseISO, addHours } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import type { CalendarEvent } from 'src/composables/useGoogleCalendar'
+import { saoPauloHHMM, type CalendarEvent } from 'src/composables/useGoogleCalendar'
 import { useAdminAuth } from 'src/composables/useAdminAuth'
 import AdminEventForm from 'src/components/admin/AdminEventForm.vue'
 
 const $q = useQuasar()
 const { isAdmin } = useAdminAuth()
 const editFormOpen = ref(false)
+const coverError = ref(false)
 
 const isOpen = defineModel<boolean>({ required: true })
 
 const props = defineProps<{
   evento: CalendarEvent | null
 }>()
+
+watch(() => props.evento, () => { coverError.value = false })
 
 const dataFormatada = computed(() => {
   if (!props.evento?.start) return ''
@@ -164,12 +174,11 @@ const dataFormatada = computed(() => {
     if (props.evento.allDay) {
       return format(start, "EEEE, dd 'de' MMMM 'de' yyyy", { locale: ptBR })
     }
-    const startStr = format(start, "EEEE, dd 'de' MMMM 'de' yyyy 'às' HH:mm", { locale: ptBR })
-    if (props.evento.end) {
-      const end = parseISO(props.evento.end)
-      return `${startStr} – ${format(end, 'HH:mm')}`
-    }
-    return startStr
+    const datePart = format(start, "EEEE, dd 'de' MMMM 'de' yyyy", { locale: ptBR })
+    const startTime = saoPauloHHMM(props.evento.start)
+    const endTime = props.evento.end ? saoPauloHHMM(props.evento.end) : ''
+    const timeStr = endTime ? `${startTime} – ${endTime}` : startTime
+    return `${datePart} às ${timeStr}`
   } catch {
     return props.evento.start
   }
@@ -256,6 +265,33 @@ const mapEmbedUrl = computed(() =>
       border-radius: 50%;
       background: radial-gradient(circle, rgba(225, 172, 38, 0.15) 0%, transparent 70%);
     }
+
+    &--cover {
+      min-height: 220px;
+
+      &::before { display: none; }
+    }
+  }
+
+  &__cover-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    opacity: 0.9;
+  }
+
+  &__cover-gradient {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 110px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.82) 0%, transparent 100%);
+    pointer-events: none;
   }
 
   &__header-overlay {

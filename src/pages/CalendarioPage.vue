@@ -141,6 +141,7 @@ function handleEventClick(info: any) {
     description: p.description ?? '',
     location: p.location ?? '',
     allDay: info.event.allDay,
+    imageUrl: p.imageUrl ?? '',
   }
   modalOpen.value = true
 }

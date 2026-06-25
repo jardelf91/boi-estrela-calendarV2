@@ -90,7 +90,7 @@
     <!-- Footer info -->
     <div class="sobre-footer">
       <p class="sobre-footer__text">
-        Calendário atualizado via Google Calendar
+        Desenvolvido com ❤️ por <a href="https://www.instagram.com/jardel_fernandes98/" target="_blank" class="sobre-footer__link">Jardel Fernandes</a>
       </p>
       <div class="sobre-footer__stars">
         <q-icon name="star" color="primary" size="12px" v-for="i in 5" :key="i" />

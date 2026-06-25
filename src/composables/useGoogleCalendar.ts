@@ -12,6 +12,38 @@ export interface CalendarEvent {
   description: string
   location: string
   allDay: boolean
+  imageUrl: string
+}
+
+// Retorna HH:mm no fuso de São Paulo — independente do fuso do calendário ou do device
+export function saoPauloHHMM(isoString: string): string {
+  if (!isoString || !isoString.includes('T')) return ''
+  try {
+    const d = new Date(isoString)
+    if (isNaN(d.getTime())) return ''
+    return new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'America/Sao_Paulo',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    }).format(d)
+  } catch { return '' }
+}
+
+// Retorna YYYY-MM-DD no fuso de São Paulo
+export function saoPauloDateStr(isoString: string): string {
+  if (!isoString) return ''
+  if (!isoString.includes('T')) return isoString.substring(0, 10)
+  try {
+    const d = new Date(isoString)
+    if (isNaN(d.getTime())) return isoString.substring(0, 10)
+    return new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'America/Sao_Paulo',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).format(d)
+  } catch { return isoString.substring(0, 10) }
 }
 
 // Estado compartilhado entre todas as páginas
@@ -57,6 +89,7 @@ export function useGoogleCalendar() {
         description: item.description ?? '',
         location: item.location ?? '',
         allDay: !item.start?.dateTime,
+        imageUrl: item.extendedProperties?.shared?.imageUrl ?? '',
       }))
 
       fetched = true
@@ -89,6 +122,7 @@ export function useGoogleCalendar() {
       extendedProps: {
         description: e.description,
         location: e.location,
+        imageUrl: e.imageUrl,
       },
     })),
   )
