@@ -124,6 +124,17 @@
         <q-btn
           v-if="isAdmin"
           flat
+          color="green-5"
+          icon="share"
+          label="Compartilhar no WhatsApp"
+          class="full-width q-mt-sm"
+          no-caps
+          :href="whatsappUrl"
+          target="_blank"
+        />
+        <q-btn
+          v-if="isAdmin"
+          flat
           color="amber-6"
           icon="edit"
           label="Editar evento"
@@ -217,6 +228,24 @@ const googleCalendarUrl = computed(() => {
   } catch {
     return ''
   }
+})
+
+const whatsappUrl = computed(() => {
+  if (!props.evento) return ''
+  const lines: string[] = []
+  lines.push('🌟 *Boi Estrela* 🌟')
+  lines.push('')
+  lines.push('📣 *' + props.evento.title + '*')
+  if (dataFormatada.value) lines.push('📅 ' + dataFormatada.value)
+  if (props.evento.location) {
+    lines.push('📍 ' + props.evento.location)
+    lines.push('🗺 ' + mapsUrl.value)
+  }
+  if (props.evento.description) {
+    lines.push('')
+    lines.push('📝 ' + props.evento.description)
+  }
+  return 'https://wa.me/?text=' + encodeURIComponent(lines.join('\n'))
 })
 
 const mapsUrl = computed(() =>

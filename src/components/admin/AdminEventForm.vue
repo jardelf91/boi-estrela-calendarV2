@@ -83,7 +83,13 @@
           dark
           outlined
           class="q-mb-md"
-        />
+        >
+          <template #append>
+            <q-btn flat round dense icon="map" color="primary" @click="mapPickerOpen = true">
+              <q-tooltip>Selecionar no mapa</q-tooltip>
+            </q-btn>
+          </template>
+        </q-input>
 
         <q-input
           v-model="form.description"
@@ -150,6 +156,8 @@
 
     </q-card>
   </q-dialog>
+
+  <MapPickerDialog v-model="mapPickerOpen" @selected="form.location = $event" />
 </template>
 
 <script setup lang="ts">
@@ -158,6 +166,7 @@ import { useQuasar } from 'quasar'
 import { format } from 'date-fns'
 import { useAdminAuth } from 'src/composables/useAdminAuth'
 import { useGoogleCalendar, CALENDAR_ID, saoPauloHHMM, saoPauloDateStr, type CalendarEvent } from 'src/composables/useGoogleCalendar'
+import MapPickerDialog from 'src/components/admin/MapPickerDialog.vue'
 
 defineOptions({ name: 'AdminEventForm' })
 
@@ -173,6 +182,7 @@ const emit = defineEmits<{ saved: [] }>()
 const { isTokenValid, accessToken, connectGoogle } = useAdminAuth()
 const { refetch } = useGoogleCalendar()
 
+const mapPickerOpen = ref(false)
 const saving = ref(false)
 const deleting = ref(false)
 const connectingGoogle = ref(false)

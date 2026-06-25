@@ -42,6 +42,12 @@
           @click="abrirEventoModal"
         />
         <FullCalendar ref="calendarRef" :options="desktopOptions" />
+        <div class="calendario-page__divider">
+          <span>Eventos do mês</span>
+        </div>
+        <div class="calendario-page__list">
+          <FullCalendar ref="desktopListRef" :options="desktopListOptions" />
+        </div>
       </div>
 
     </q-pull-to-refresh>
@@ -73,6 +79,7 @@ const { calendarEvents, upcomingEvents, loading, error, fetchEvents, refetch } =
 const calendarRef = ref<InstanceType<typeof FullCalendar> | null>(null)
 const miniCalRef = ref<InstanceType<typeof FullCalendar> | null>(null)
 const listCalRef = ref<InstanceType<typeof FullCalendar> | null>(null)
+const desktopListRef = ref<InstanceType<typeof FullCalendar> | null>(null)
 const modalOpen = ref(false)
 const eventoSelecionado = ref<CalendarEvent | null>(null)
 const diaFiltrado = ref<Date | null>(null)
@@ -178,6 +185,10 @@ const miniCalOptions = computed(() => ({
     }
     return []
   },
+  datesSet: (info: any) => {
+    diaFiltrado.value = null
+    listCalRef.value?.getApi()?.gotoDate(info.view.currentStart)
+  },
   eventClick: handleEventClick,
 }))
 
@@ -210,6 +221,23 @@ const desktopOptions = computed(() => ({
   },
   buttonText: { today: 'Hoje' },
   noEventsText: 'Nenhuma apresentação neste período',
+  displayEventTime: false,
+  eventClassNames,
+  datesSet: (info: any) => {
+    desktopListRef.value?.getApi()?.gotoDate(info.view.currentStart)
+  },
+  eventClick: handleEventClick,
+}))
+
+const desktopListOptions = computed<CalendarOptions>(() => ({
+  plugins: [listPlugin],
+  initialView: 'listMonth',
+  locale: ptBrLocale,
+  height: 'auto',
+  events: calendarEvents.value,
+  headerToolbar: false as const,
+  noEventsText: 'Nenhuma apresentação neste período',
+  listDaySideFormat: false as const,
   displayEventTime: false,
   eventClassNames,
   eventClick: handleEventClick,
@@ -279,14 +307,26 @@ const desktopOptions = computed(() => ({
   }
 
   .fc-button {
-    padding: 5px 10px;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: #e1ac26 !important;
+    padding: 4px 8px;
     font-size: 13px;
     font-weight: 500;
-    border-radius: 8px !important;
+    border-radius: 6px !important;
     text-transform: none;
 
+    &:hover {
+      background: rgba(225, 172, 38, 0.1) !important;
+      color: #e1ac26 !important;
+    }
+
+    &:active,
     &:focus {
-      box-shadow: none;
+      background: rgba(225, 172, 38, 0.15) !important;
+      box-shadow: none !important;
+      color: #e1ac26 !important;
     }
   }
 
