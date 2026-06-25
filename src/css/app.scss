@@ -1,0 +1,64 @@
+// Variáveis globais
+$amarelo: #e1ac26;
+$dark-bg: #111111;
+$dark-card: #1c1c1c;
+$dark-surface: #242424;
+
+// Reset / base
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: $dark-bg;
+  color: #ffffff;
+  -webkit-font-smoothing: antialiased;
+}
+
+// Scrollbar customizada
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: $dark-bg;
+}
+::-webkit-scrollbar-thumb {
+  background: $amarelo;
+  border-radius: 2px;
+}
+
+// Utilitários de cor
+.text-amarelo {
+  color: $amarelo !important;
+}
+.bg-amarelo {
+  background-color: $amarelo !important;
+}
+.bg-dark-card {
+  background-color: $dark-card !important;
+}
+.bg-dark-surface {
+  background-color: $dark-surface !important;
+}
+
+// FullCalendar - tema escuro global
+.fc {
+  --fc-border-color: #2a2a2a;
+  --fc-page-bg-color: transparent;
+  --fc-neutral-bg-color: #1c1c1c;
+  --fc-neutral-text-color: #ffffff;
+  --fc-today-bg-color: rgba(225, 172, 38, 0.08);
+  --fc-event-bg-color: #e1ac26;
+  --fc-event-border-color: #e1ac26;
+  --fc-event-text-color: #111111;
+  --fc-button-bg-color: #e1ac26;
+  --fc-button-border-color: #e1ac26;
+  --fc-button-text-color: #111111;
+  --fc-button-hover-bg-color: #c99a1f;
+  --fc-button-hover-border-color: #c99a1f;
+  --fc-button-active-bg-color: #b08818;
+  --fc-button-active-border-color: #b08818;
+  --fc-list-event-hover-bg-color: rgba(225, 172, 38, 0.08);
+
+  font-family: 'Roboto', sans-serif;
+}
