@@ -30,7 +30,16 @@ quasar dev
 
 ```bash
 quasar build -m pwa
+```
+
+Deploy normal:
+```bash
 npx gh-pages -d dist/pwa
+```
+
+Se o GitHub Pages não atualizar, force com:
+```bash
+npx gh-pages -d dist/pwa --no-history
 ```
 
 ## ⚙️ Variáveis de ambiente
