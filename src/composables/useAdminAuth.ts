@@ -125,7 +125,9 @@ export function useAdminAuth() {
   }
 
   async function connectGoogle(): Promise<void> {
-    await loadGisScript()
+    if (!window.google?.accounts?.oauth2) {
+      await loadGisScript()
+    }
     return new Promise((resolve, reject) => {
       const client = window.google.accounts.oauth2.initTokenClient({
         client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID as string,
@@ -142,7 +144,7 @@ export function useAdminAuth() {
           resolve()
         },
       })
-      client.requestAccessToken({ prompt: '' })
+      client.requestAccessToken({ prompt: 'select_account' })
     })
   }
 
